@@ -1,0 +1,107 @@
+<workflow-app xmlns = "uri:oozie:workflow:0.2" name = "IncrementalImportSqoopHive">
+   <start to="INCR_CDW_SAPP_node"/>
+    <action name="INCR_CDW_SAPP_node">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+			<configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec UPDATE_CDW_SAPP_BRANCH_JOB</command>              
+             <!-- <archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>-->
+        </sqoop>
+        <ok to="Overwrite_Branch_Table"/>
+        <error to="kill_job"/>
+    </action>
+	   <action name = "Overwrite_Branch_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/OverwriteBranchData.hql</script>
+          </hive>
+	      <ok to = "INCR_CDW_SAPP_node2"/>
+      <error to = "kill_job" />
+   </action>
+   <action name="INCR_CDW_SAPP_node2">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+			<configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec UPDATE_CDW_SAPP_CUSTOMER_JOB</command>              
+              <archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>
+        </sqoop>
+        <ok to="Overwrite_Customer_Table"/>
+        <error to="kill_job"/>
+    </action>
+	   <action name = "Overwrite_Customer_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/OverwriteCustomerData.hql</script>
+          </hive>
+	      <ok to = "INCR_CDW_SAPP_node3"/>
+      <error to = "kill_job" />
+   </action>
+   <action name="INCR_CDW_SAPP_node3">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+			<configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec UPDATE_CDW_SAPP_CREDITCARD_JOB</command>              
+             <!-- <archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>-->
+        </sqoop>
+        <ok to="Overwrite_Creditcard_Table"/>
+        <error to="kill_job"/>
+    </action>
+	   <action name = "Overwrite_Creditcard_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/OverwriteCreditcardData.hql</script>
+          </hive>
+	      <ok to = "INCR_CDW_SAPP_node4"/>
+      <error to = "kill_job" />
+   </action>
+   <action name="INCR_CDW_SAPP_node4">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+			<configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec UPDATE_CDW_SAPP_TIMEID_JOB</command>              
+             <!-- <archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>-->
+        </sqoop>
+        <ok to="Overwrite_TIME_Table"/>
+        <error to="kill_job"/>
+    </action>
+	   <action name = "Overwrite_TIME_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/OverwriteTimeData.hql</script>
+          </hive>
+	      <ok to = "end" />
+      <error to = "kill_job" />
+   </action>
+      <kill name = "kill_job">
+      <message>Job failed</message>
+   </kill>
+   <end name = "end" />
+</workflow-app>

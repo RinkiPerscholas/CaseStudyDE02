@@ -1,0 +1,115 @@
+<workflow-app xmlns = "uri:oozie:workflow:0.2" name = "copy data from external to orc">
+   <start to = "Create_External_Customer_Table" />
+    <action name = "Create_External_Customer_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/external_CDW_SAPP_CUSTOMER.hive</script>
+      </hive>
+      <ok to = "Create_orc_Customer_Table" />
+      <error to = "kill_job" />
+   </action>
+   <action name = "Create_orc_Customer_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+        <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/CDW_SAPP_D_CUSTOMER.hive</script>
+      </hive>
+      <ok to = "Insert_into_Customer_Table" />
+      <error to = "kill_job" />
+   </action>
+   <action name = "Insert_into_Customer_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/CopyCustomerData.hql</script>
+          </hive>
+	      <ok to = "Create_External_Branch_Table" />
+      <error to = "kill_job" />
+   </action>
+   <action name = "Create_External_Branch_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/external_CDW_SAPP_BRANCH.hive</script>
+      </hive>
+      <ok to = "Create_orc_Branch_Table" />
+      <error to = "kill_job" />
+   </action>
+   <action name = "Create_orc_Branch_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+        <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/CDW_SAPP_D_BRANCH.hive</script>
+      </hive>
+      <ok to = "Insert_into_Branch_Table" />
+      <error to = "kill_job" />
+   </action>
+   <action name = "Insert_into_Branch_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/CopyBranchData.hql</script>
+          </hive>
+	      <ok to = "Create_External_TIME_Table"/>
+      <error to = "kill_job" />
+   </action>
+   <action name = "Create_External_TIME_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/external_CDW_SAPP_TIME.hive</script>
+      </hive>
+      <ok to = "Create_orc_TIME_Table" />
+      <error to = "kill_job" />
+   </action>
+   <action name = "Create_orc_TIME_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+        <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/CDW_SAPP_D_TIME.hive</script>
+      </hive>
+      <ok to = "Insert_into_TIME_Table" />
+      <error to = "kill_job" />
+   </action>
+   <action name = "Insert_into_TIME_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/CopyTimeData.hql</script>
+          </hive>
+	      <ok to = "Create_External_F_CREDIT_CARD_Table"/>
+      <error to = "kill_job" />
+   </action>
+    <action name = "Create_External_F_CREDIT_CARD_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/external_CDW_SAPP_F_CREDIT_CARD.hive</script>
+      </hive>
+      <ok to = "Create_orc_F_CREDIT_CARD_Table" />
+      <error to = "kill_job" />
+   </action>
+   <action name = "Create_orc_F_CREDIT_CARD_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+        <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/CDW_SAPP_F_CREDIT_CARD.hive</script>
+      </hive>
+      <ok to = "Insert_into_F_CREDIT_CARD_Table" />
+      <error to = "kill_job" />
+   </action>
+   <action name = "Insert_into_F_CREDIT_CARD_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+         <job-tracker>${jobTracker}</job-tracker>
+         <name-node>${nameNode}</name-node>
+         <script>${nameNode}/user/maria_dev/CasestudyHive/CopyCreditCardData.hql</script>
+          </hive>
+	      <ok to = "end" />
+      <error to = "kill_job" />
+   </action>
+      <kill name = "kill_job">
+      <message>Job failed</message>
+   </kill>
+   <end name = "end" />
+</workflow-app>

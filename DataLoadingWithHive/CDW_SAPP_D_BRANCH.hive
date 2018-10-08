@@ -1,0 +1,20 @@
+SET hive.exec.dynamic.partition=true;
+SET hive.exec.dynamic.partition.mode=nonstrict;
+Create Table CDW_SAPP_D_BRANCH(
+BRANCH_CODE int,
+BRANCH_NAME string,
+BRANCH_STREET string,
+BRANCH_CITY string,
+BRANCH_ZIP int,
+BRANCH_PHONE string,
+LAST_UPDATED timestamp
+)
+PARTITIONED BY(BRANCH_STATE STRING)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS textfile
+LOCATION '/user/maria_dev/Credit_Card_System/PARTITIONED/CDW_SAPP_BRANCH';
+
+
+
+
